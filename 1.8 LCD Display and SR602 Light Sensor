@@ -1,6 +1,9 @@
 #include <TFT.h>  
 #include <SPI.h>
 
+int ledPin = 13;                // LED
+int pirPin = 2;                 // PIR Out pin
+int pirStat = 0;  
 // pin definition for Arduino UNO
 #define cs   10
 #define dc   9
@@ -11,7 +14,9 @@
 TFT TFTscreen = TFT(cs, dc, rst);
 
 void setup() {
-
+ pinMode(ledPin, OUTPUT);
+  pinMode(pirPin, INPUT);
+  Serial.begin(9600);
   //initialize the library
   TFTscreen.begin();
 
@@ -22,6 +27,15 @@ void setup() {
 }
 
 void loop() {
+ pirStat = digitalRead(pirPin);
+  if (pirStat == HIGH) {
+    digitalWrite(ledPin, HIGH);
+    Serial.println("Hey I got you!!!");
+    delay(1000);
+  }
+  else {
+    digitalWrite(ledPin, LOW);
+  }
 
   //generate a random color
   int redRandom = random(0, 255);
@@ -32,11 +46,32 @@ void loop() {
   TFTscreen.stroke(redRandom, greenRandom, blueRandom);
   
   // print Hello, World! in the middle of the screen
-  TFTscreen.text("INTELITEK", 1,37);
-  TFTscreen.text("WELCOME TO", 1, 17);
+   pirStat = digitalRead(pirPin);
+  if (pirStat == HIGH) {
+    digitalWrite(ledPin, HIGH);
+    Serial.println("Hey I got you!!!");
+    delay(1000);
+    TFTscreen.text("INTELITEK", 1,37);
+   TFTscreen.text("WELCOME TO", 1, 17);
   //TFTscreen.text("TO", 1, 37);
   TFTscreen.text("EDU SOLUTION", 1, 57);
   TFTscreen.text("PVT. LMT.!", 1, 77);
   // wait 200 miliseconds until change to next color
-  delay(200);
+  delay(5000);
+  TFTscreen.background(0,0,0);
+  }
+  else {
+    digitalWrite(ledPin, LOW);
+   // TFTscreen.background(0,0,0);
+   TFTscreen.text("FOR", 1,37);
+  TFTscreen.text("THANKS", 1, 17);
+  //TFTscreen.text("TO", 1, 37);
+  TFTscreen.text("VISITING!", 1, 57);
+  TFTscreen.text("BYE TC!", 1, 77);
+  // wait 200 miliseconds until change to next color
+  delay(5000);
+  TFTscreen.background(0,0,0);
+   
+  }
+  
 }
